@@ -1,0 +1,17 @@
+INSERT INTO users (username, password, first_name, last_name, email, hobbies, interests, zip)
+VALUES ('testuser1',
+        '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
+        'Test',
+        'User1',
+        'test@gmail.com',
+        'coding',
+        'gaming',
+        '94110'),
+       ('testuser2',
+        '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
+        'Test',
+        'User2!',
+        'test2@gmail.com',
+        'watching movies',
+        'traveling',
+        '94115');
