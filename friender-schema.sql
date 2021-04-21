@@ -7,7 +7,8 @@ CREATE TABLE users (
     CHECK (position('@' IN email) > 1),
   hobbies TEXT,
   interests TEXT,
-  zip VARCHAR(9) NOT NULL
+  zip VARCHAR(9),
+  radius INT 
 );
 
 CREATE TABLE friends(

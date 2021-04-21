@@ -1,4 +1,4 @@
-INSERT INTO users (username, password, first_name, last_name, email, hobbies, interests, zip)
+INSERT INTO users (username, password, first_name, last_name, email, hobbies, interests, zip, radius)
 VALUES ('testuser1',
         '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
         'Test',
@@ -6,7 +6,8 @@ VALUES ('testuser1',
         'test@gmail.com',
         'coding',
         'gaming',
-        '94110'),
+        '94110', 
+         5),
        ('testuser2',
         '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
         'Test',
@@ -14,4 +15,5 @@ VALUES ('testuser1',
         'test2@gmail.com',
         'watching movies',
         'traveling',
-        '94115');
+        '94115',
+         10);

@@ -15,41 +15,34 @@ const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
 class User {
 
-  static async getUser(username) {
-    const userRes = await db.query(
-      `SELECT username,
-              first_name as firstName, 
-              last_name as lastName,
-              email, 
-              hobbies, 
-              interests,
-              zip,
-        FROM users
-        WHERE username = $1`,
-      [username],
-    )
-    const user = userRes.rows[0];
-
-    if (!user) throw new NotFoundError(`No user with ${username} found`);
-
-    return user;
-  }
-
-  static async getAllUsers() {
+  /** auth user w username, password.
+   * 
+   * Returns { username, first_name, last_name, email }
+   */
+  static async authenticate(username, password) {
     const res = await db.query(
       `SELECT username,
-              first_name as firstName, 
-              last_name as lastName,
-              email, 
-              hobbies, 
-              interests,
-              zip,
-        FROM users
-        ORDER BY username`);
+              password,
+              first_name AS firstName,
+              last_name AS lastName, 
+              email
+      FROM users
+      WHERE username = $1`,
+      [username]
+    );
 
-    return res.rows;
+    const user = res.rows[0];
+
+    if (user) {
+      const isValid = await bcrypt.compare(password, user.password);
+      if (isValid === true) {
+        delete user.password;
+        return user;
+      }
+    }
   }
 
+  // register/signup user 
   static async register({ username, password, firstName, lastName, email }) {
 
     const checkDuplicates = await db.query(
@@ -72,16 +65,54 @@ class User {
       [username, hashedPassword, firstName, lastName, email]
     )
 
-    const user = result.rows[0];
+    const user = res.rows[0];
 
     return user;
 
   }
 
+  // get a single user
+  static async getUser(username) {
+    const userRes = await db.query(
+      `SELECT username,
+              first_name as firstName, 
+              last_name as lastName,
+              email, 
+              hobbies, 
+              interests,
+              zip,
+              radius
+        FROM users
+        WHERE username = $1`,
+      [username],
+    )
+    const user = userRes.rows[0];
+
+    if (!user) throw new NotFoundError(`No user with ${username} found`);
+
+    return user;
+  }
+
+  static async getAllUsers() {
+    const res = await db.query(
+      `SELECT username,
+              first_name as firstName, 
+              last_name as lastName,
+              email, 
+              hobbies, 
+              interests,
+              zip,
+              radius
+        FROM users
+        ORDER BY username`);
+
+    return res.rows;
+  }
+
   static async updateUserProfile(username, data) {
-    if (data.password) {
-      data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
-    }
+    // if (data.password) {
+    //   data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
+    // }
 
     const { setCols, values } = sqlForPartialUpdate(
       data,
@@ -101,9 +132,10 @@ class User {
                                           email,
                                           hobbies,
                                           interests, 
-                                          zip`;
-    const result = await db.query(querySql, [...values, username]);
-    const user = result.rows[0];
+                                          zip, 
+                                          radius`;
+    const res = await db.query(querySql, [...values, username]);
+    const user = res.rows[0];
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
@@ -112,22 +144,22 @@ class User {
   }
 
 
-  static async delete(username) {
-    let result = await db.query(
+  static async remove(username) {
+    let res = await db.query(
       `DELETE
            FROM users
            WHERE username = $1
            RETURNING username`,
       [username],
     );
-    const user = result.rows[0];
+    const user = res.rows[0];
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
   }
 
   static async addUserLike(username1, username2) {
 
-    let querySQL = `SELECT username, 
+    let querySQL = `SELECT username 
                         FROM users
                         WHERE username = $1`
 
@@ -146,6 +178,8 @@ class User {
     
   }
 
+  //delete user
 
 }
 
+module.exports = User 
