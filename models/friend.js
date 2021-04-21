@@ -15,6 +15,7 @@ class Friend {
         WHERE user_1 = $1 or user_2 = $1`,
         [username]
     )
+    
 
     return res.rows;
   }

@@ -5,23 +5,15 @@
 const jsonschema = require("jsonschema");
 const User = require("../models/user");
 const Likes = require("../models/likes");
+const Friend = require("../models/friend");
 
 const express = require("express");
 const { ensureCorrectUser, ensureLoggedIn } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const userUpdateSchema = require("../schemas/userUpdate");
 const app = require("../app");
-const friendRoutes = require("./friends");
 
 const router = express.Router();
-
-
-router.use('/:username/friends', function(req, res, next){
-  req.username = req.params.username;
-  next();
-}, friendRoutes);
-
-
 
 
 /** GET all users error
@@ -113,6 +105,15 @@ try {
  * 
  * Return list of all users.
 */
+
+router.get("/:username/friends", ensureCorrectUser, async function (req, res, next) {
+  try {
+    const friends = await Friend.getUserFriends(req.params.username);
+    return res.json({ friends });
+  } catch (err) {
+    return next(err); 
+  }
+});
 
 
 
