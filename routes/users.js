@@ -4,12 +4,25 @@
 
 const jsonschema = require("jsonschema");
 const User = require("../models/user");
+const Likes = require("../models/likes");
+
 const express = require("express");
 const { ensureCorrectUser, ensureLoggedIn } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const userUpdateSchema = require("../schemas/userUpdate");
+const app = require("../app");
+const friendRoutes = require("./friends");
 
 const router = express.Router();
+
+
+router.use('/:username/friends', function(req, res, next){
+  req.username = req.params.username;
+  next();
+}, friendRoutes);
+
+
+
 
 /** GET all users error
  * 
@@ -83,13 +96,24 @@ try {
 
  router.post("/:username/explore/:likedUsername", ensureCorrectUser, async function (req, res, next) {
   try {
+    const user1 = req.params.username;
     const user2 = req.params.likedUsername;
-    await User.addUserLike(req.params.username, user2);
-    return res.json({ liked: user2 });
+    await User.addUserLike(user1, user2);
+    const friendCheck = await Likes.checkMutualLikes(user1, user2);
+    console.log(friendCheck, "friendCheck response")
+
+    return friendCheck ? res.json({match: `You have a friend match ${user2}!`}) : res.json({ liked: user2 })
+  
   } catch (err) {
     return next(err);
   }
 });
+
+/** GET all users freinds
+ * 
+ * Return list of all users.
+*/
+
 
 
 module.exports = router;

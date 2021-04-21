@@ -51,8 +51,11 @@ function ensureLoggedIn(req, res, next) {
 function ensureCorrectUser(req, res, next) {
   try {
     const user = res.locals.user;
-    console.log('GLOBAL USER', res.locals.user)
-    if (!(user && user.username === req.params.username)) {
+    console.log('GLOBAL USER', res.locals.user);
+    console.log(req.params, "params");
+    const username = req.params.username || req.username;
+
+    if (!(user && user.username === username)) {
       throw new UnauthorizedError();
     }
     return next();

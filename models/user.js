@@ -172,13 +172,11 @@ class User {
     if (!user2) throw new NotFoundError(`No username: ${username}`);
 
     await db.query(
-      `INSERT INTO likes(user_1, user_2)
+      `INSERT INTO likes(user_username, likes)
         VALUES($1, $2)`,
         [username1, username2]);
     
   }
-
-  //delete user
 
 }
 
