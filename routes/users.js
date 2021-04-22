@@ -93,7 +93,6 @@ try {
     const user2 = req.params.likedUsername;
     await User.addUserLike(user1, user2);
     const friendCheck = await Likes.checkMutualLikes(user1, user2);
-    console.log(friendCheck, "friendCheck response")
 
     return friendCheck ? res.json({match: `You have a friend match ${user2}!`}) : res.json({ liked: user2 })
   

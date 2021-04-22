@@ -23,8 +23,8 @@ class User {
     const res = await db.query(
       `SELECT username,
               password,
-              first_name AS firstName,
-              last_name AS lastName, 
+              first_name AS "firstName",
+              last_name AS "lastName", 
               email
       FROM users
       WHERE username = $1`,
@@ -61,7 +61,7 @@ class User {
     const res = await db.query(
       `INSERT into users(username, password, first_name, last_name, email)
         VALUES($1, $2, $3, $4, $5)
-        RETURNING username, first_name as firstName, last_name as lastName, email`,
+        RETURNING username, first_name as "firstName", last_name as "lastName", email`,
       [username, hashedPassword, firstName, lastName, email]
     )
 
@@ -75,8 +75,8 @@ class User {
   static async getUser(username) {
     const userRes = await db.query(
       `SELECT username,
-              first_name as firstName, 
-              last_name as lastName,
+              first_name AS "firstName", 
+              last_name AS "lastName",
               email, 
               hobbies, 
               interests,
@@ -96,8 +96,8 @@ class User {
   static async getAllUsers() {
     const res = await db.query(
       `SELECT username,
-              first_name as firstName, 
-              last_name as lastName,
+              first_name as "firstName", 
+              last_name as "lastName",
               email, 
               hobbies, 
               interests,

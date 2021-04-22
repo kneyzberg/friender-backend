@@ -6,6 +6,8 @@ const {
   UnauthorizedError,
 } = require("../expressError");
 
+
+
 class Friend {
 
   static async getUserFriends(username){
@@ -21,7 +23,7 @@ class Friend {
     const friendsArr = friends.map(friend => friend.user_1 === username ? friend.user_2 : friend.user_1);
 
     const friendsRes = await db.query(
-      `SELECT username, first_name AS firstName, last_name AS lastName
+      `SELECT username, first_name AS "firstName", last_name AS "lastName"
           FROM users
           WHERE username = ANY($1::text[])`,
           [(friendsArr)]
