@@ -12,6 +12,7 @@ const { ensureCorrectUser, ensureLoggedIn } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const userUpdateSchema = require("../schemas/userUpdate");
 const app = require("../app");
+const db = require("../db");
 
 const router = express.Router();
 
@@ -109,6 +110,7 @@ try {
 router.get("/:username/friends", ensureCorrectUser, async function (req, res, next) {
   try {
     const friends = await Friend.getUserFriends(req.params.username);
+
     return res.json({ friends });
   } catch (err) {
     return next(err); 

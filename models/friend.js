@@ -14,10 +14,20 @@ class Friend {
         FROM friends
         WHERE user_1 = $1 or user_2 = $1`,
         [username]
-    )
-    
+    );
 
-    return res.rows;
+    const friends = res.rows;
+
+    const friendsArr = friends.map(friend => friend.user_1 === username ? friend.user_2 : friend.user_1);
+
+    const friendsRes = await db.query(
+      `SELECT username, first_name AS firstName, last_name AS lastName
+          FROM users
+          WHERE username = ANY($1::text[])`,
+          [(friendsArr)]
+    )
+
+    return friendsRes.rows ;
   }
 }
   
