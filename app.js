@@ -1,14 +1,16 @@
 "use strict";
 
-/** Express app for jobly. */
+/** Express app for friender. */
 
 const express = require("express");
+const cors = require("cors");
 const usersRoutes = require('./routes/users');
 const authRoutes = require('./routes/auth');
 const { NotFoundError } = require("./expressError");
 const { authenticateJWT } = require("./middleware/auth");
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(authenticateJWT);
 
