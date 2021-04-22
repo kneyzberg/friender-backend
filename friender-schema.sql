@@ -8,7 +8,7 @@ CREATE TABLE users (
   hobbies TEXT,
   interests TEXT,
   zip VARCHAR(9),
-  radius INT 
+  radius INT
 );
 
 CREATE TABLE friends(
@@ -26,3 +26,10 @@ CREATE TABLE likes(
   likes VARCHAR(25)
     REFERENCES users ON DELETE CASCADE
 );
+
+CREATE TABLE images(
+  id SERIAL PRIMARY KEY,
+  user_username VARCHAR(25)
+    REFERENCES users ON DELETE CASCADE,
+  image_url TEXT NOT NULL
+)

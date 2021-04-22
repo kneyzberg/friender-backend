@@ -17,3 +17,4 @@ VALUES ('testuser1',
         'traveling',
         '94115',
          10);
+
