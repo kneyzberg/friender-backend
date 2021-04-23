@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.891.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -17,6 +18,9 @@
     "express": "^5.0.0-alpha.8",
     "jsonschema": "^1.4.0",
     "jsonwebtoken": "^8.5.1",
-    "pg": "^8.6.0"
+    "multer": "^1.4.2",
+    "multer-s3": "^2.9.0",
+    "pg": "^8.6.0",
+    "uuid": "^8.3.2"
   }
 }

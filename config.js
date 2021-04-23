@@ -5,6 +5,8 @@
 require("dotenv").config();
 
 const SECRET_KEY = process.env.SECRET_KEY || "secret-dev";
+const AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
+const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
 
 const PORT = +process.env.PORT || 3001;
 
@@ -25,4 +27,6 @@ module.exports = {
   PORT,
   BCRYPT_WORK_FACTOR,
   getDatabaseUri,
+  AWS_SECRET_KEY,
+  AWS_ACCESS_KEY
 };

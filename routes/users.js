@@ -7,13 +7,39 @@ const User = require("../models/user");
 const Likes = require("../models/likes");
 const Friend = require("../models/friend");
 const Image = require("../models/image");
-
 const express = require("express");
 const { ensureCorrectUser, ensureLoggedIn } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const userUpdateSchema = require("../schemas/userUpdate");
-const app = require("../app");
-const db = require("../db");
+
+
+const { AWS_SECRET_KEY, AWS_ACCESS_KEY } = require("../config");
+const aws = require("aws-sdk");
+
+aws.config.update({
+  secretAccessKey: AWS_SECRET_KEY,
+  accessKeyId: AWS_ACCESS_KEY,
+  region: 'us-west-1'
+})
+const s3 = new aws.S3();
+const multer = require("multer");
+const multerS3 = require("multer-s3");
+
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    acl: 'public-read',
+    bucket: 'frienderr20',
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    key: function(req, file, cb) {
+      console.log('file.....', file);
+      cb(null, Date.now().toString());
+    }
+  })
+});
+upload.logResponse = function (req,res, next) {
+  console.log(res)
+}
 
 const router = express.Router();
 
@@ -121,13 +147,29 @@ router.get("/:username/friends", ensureCorrectUser, async function (req, res, ne
 
 router.get("/:username/images", ensureCorrectUser, async function (req, res, next) {
   try {
-    const images= await Image.getImages(req.params.username);
+    const images = await Image.getImages(req.params.username);
     return res.json({ images });
   } catch (err) {
     return next(err); 
   }
 });
+function uploadToAWS(req, res, next) {
+  upload.array('upl', 1);
+  console.log('req', req);
+  next();
+}
 
+// TODO: add in middleware.
+router.post("/:username/upload", uploadToAWS, async function (req, res, next){
+
+  // try {
+  //   const image = await Image.addImage(req.params.username, req.body.imgUrl)
+  //   return res.json({ image })
+  // }
+  // catch (err) {
+  //   return next(err);
+  // }
+})
 
 
 module.exports = router;
