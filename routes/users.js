@@ -14,6 +14,7 @@ const userUpdateSchema = require("../schemas/userUpdate");
 
 
 const { AWS_SECRET_KEY, AWS_ACCESS_KEY } = require("../config");
+const AWS_BASE_URL = "https://frienderr20.s3-us-west-1.amazonaws.com"
 const aws = require("aws-sdk");
 
 aws.config.update({
@@ -31,12 +32,14 @@ const upload = multer({
     acl: 'public-read',
     bucket: 'frienderr20',
     contentType: multerS3.AUTO_CONTENT_TYPE,
-    metadata: function (req, file, cb) {
-      cb(null, {fieldName: file.fieldname});
-    },
+    // metadata: function (req, file, cb) {
+    //   cb(null, {fieldName: file.fieldname});
+    // },
     key: function(req, file, cb) {
       console.log('file.....', file);
-      cb(null, Date.now().toString());
+      req.fileName = Date.now().toString();
+      console.log(file, "file");
+      cb(null, req.fileName);
     }
   })
 });
@@ -155,26 +158,25 @@ router.get("/:username/images", ensureCorrectUser, async function (req, res, nex
   }
 });
 
-function uploadToAWS(req, res, next) {
-  upload.array('upl', 1);
+// function uploadToAWS(req, res, next) {
+//   upload.array('upl', 1);
   
   
-  console.log('req', req);
-  console.log("res=======", res);
-  next();
-}
+  
+//   // console.log('req', req);
+//   // console.log("res=======", res);
+//   next();
+// }
 
 // TODO: add in middleware.
 router.post("/:username/upload", upload.array('upl', 1), async function (req, res, next){
+ 
+  console.log(req.fileName, "filename");
+  const imgUrl = `${AWS_BASE_URL}/${req.fileName}`;
+  const image = await Image.addImage(req.params.username, imgUrl);
 
-  return res.json({upload: "completed!"})
-  // try {
-  //   const image = await Image.addImage(req.params.username, req.body.imgUrl)
-  //   return res.json({ image })
-  // }
-  // catch (err) {
-  //   return next(err);
-  // }
+  return res.json({image})
+
 })
 
 

@@ -9,9 +9,9 @@ const {
 class Image {
   static async getImages(username) {
     const res = await db.query( `
-      SELECT image_url AS "imgUrl"
+      SELECT id, image_url AS "imgUrl"
       FROM images
-      WHERE username = $1
+      WHERE user_username = $1
     `, [username])
 
     const userImages = res.rows;
@@ -20,6 +20,7 @@ class Image {
 
     return userImages;
   }
+
 
   static async addImage(username, imgUrl) {
     const res = await db.query(
